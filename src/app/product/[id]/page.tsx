@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { use, useEffect, useState } from "react";
-import { FaStar } from "react-icons/fa";
+
 
 export interface data {
   id: number;
