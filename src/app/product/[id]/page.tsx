@@ -1,4 +1,5 @@
 "use client";
+import { useCart } from "@/components/CartItemContext";
 import Image from "next/image";
 import React, { use, useEffect, useState } from "react";
 
@@ -18,6 +19,7 @@ export interface data {
 const ProductDetail = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
   const [product, setProduct] = useState<data | null>(null);
+    const { addItem } = useCart()
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -36,26 +38,7 @@ const ProductDetail = ({ params }: { params: Promise<{ id: string }> }) => {
     fetchDetail();
   }, [id]);
 
-  const addToCart = async () => {
-    if (!product) return;
-    const response = await fetch("/api/cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: product.id,
-        title: product.name,
-        image: product.image,
-        price: product.price,
-      }),
-    });
-
-    if (response.ok) {
-      alert(`${product.name} added to cart!`);
-    } else {
-      alert("Failed to add product to cart.");
-    }
-  };
-
+ 
   if (!product) return <div className="flex items-center justify-center text-2xl font-semibold py-28  text-gray-700" >Sorry Product not found</div>;
 
   return (
@@ -104,7 +87,7 @@ const ProductDetail = ({ params }: { params: Promise<{ id: string }> }) => {
           <p className="text-gray-500 mb-2">{product.available}</p>
 
           <button
-            onClick={addToCart}
+            onClick={()=> addItem({...product, quantity: 1 })}
             className="bg-white border border-black   hover:bg-yellow-500 text-black font-semibold py-2 px-3 md:py-3 md:px-6 rounded-full"
           >
             Add to Cart

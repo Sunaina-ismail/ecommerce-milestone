@@ -4,9 +4,11 @@ import { useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
+import { useCart } from "./CartItemContext";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const {totalItems} = useCart()
 
   return (
     <header>
@@ -41,14 +43,18 @@ const Header = () => {
                 </Link>
               </li>
 
-              <li>
+              <li className="relative">
                 <Link
                   href="/mycart"
                   className="flex items-center justify-center space-x-1 hover:text-yellow-500"
                 >
                   <FaShoppingCart className="text-xl " />
-                  Cart
                 </Link>
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-3 bg-red-600 text-white text-[10px] rounded-full  px-2 py-[2px]">
+                    {totalItems}
+                  </span>
+                )}
               </li>
             </ul>
           </nav>

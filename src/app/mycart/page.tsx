@@ -1,46 +1,16 @@
 "use client";
 
+import { useCart } from "@/components/CartItemContext";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FaTrashAlt } from "react-icons/fa";
 
-interface CartItem {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
 
-const Cart = () => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+const Cart:React.FC = () => {
+ const {cart ,removeItem, updateQuantity} = useCart()
 
-  useEffect(() => {
-    const fetchCart = async () => {
-      const response = await fetch("/api/cart");
-      setCart(await response.json());
-    };
-
-    fetchCart();
-  }, []);
-
-  const handleCartUpdate = async (method: string, body: object) => {
-    const response = await fetch("/api/cart", {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    setCart(await response.json());
-  };
-
-  const updateQuantity = (id: number, quantity: number) => {
-    if (quantity > 0) handleCartUpdate("PUT", { id, quantity });
-  };
-
-  const removeItem = (id: number) => handleCartUpdate("DELETE", { id });
-
-  return (
+ return (
     <div
       className={`p-4 max-w-4xl mx-auto py-28 space-y-6 ${
         cart.length === 0 ? "min-h-screen flex items-center justify-center" : ""
@@ -65,7 +35,7 @@ const Cart = () => {
             >
               <Image
                 src={item.image}
-                alt={item.title}
+                alt={item.name}
                 width={60}
                 height={60}
                 unoptimized
@@ -74,7 +44,7 @@ const Cart = () => {
 
             
               <div className="flex-1 px-2">
-                <h3 className="text-xs md:text-lg font-medium">{item.title}</h3>
+                <h3 className="text-xs md:text-lg font-medium">{item.name}</h3>
                 <p className="text-xs sm:text-base text-gray-500">
                   ${(item.price * item.quantity).toFixed(2)}
                 </p>
@@ -83,14 +53,14 @@ const Cart = () => {
         
               <div className="flex items-center space-x-2 md:space-x-4">
                 <button
-                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                  onClick={() => updateQuantity(item.id, - 1)}
                   className="px-1 py-1 bg-yellow-100 "
                 >
                   -
                 </button>
                 <span>{item.quantity}</span>
                 <button
-                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                  onClick={() => updateQuantity(item.id, 1)}
                   className="px-1 py-1 bg-yellow-100 ~~"
                 >
                   +
